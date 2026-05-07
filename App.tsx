@@ -8,8 +8,10 @@ import { addTask, deleteTask, getAllTasks, updateTask, TaskItem } from './src/ut
 import { globalStyles } from './src/styles/global';
 import AboutScreen from './src/components/AboutScreen';
 
+// TODO (Zustand): Importe o seu useTaskStore aqui
 
 export default function App() {
+  // TODO (Zustand): Remova este useState e utilize o seletor da sua store para pegar as tasks
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [text, setText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -26,6 +28,7 @@ export default function App() {
   const [priority, setPriority] = useState<'Baixa' | 'Média' | 'Alta'>('Baixa');
 
   useEffect(() => {
+    // TODO (Zustand): Atualize esta chamada para usar a action correspondente da store
     getAllTasks(setTasks, setLoading);
   }, []);
 
@@ -51,8 +54,10 @@ export default function App() {
   const handleSave = () => {
     const formattedDate = dueDate ? dueDate.toISOString() : null;
     if (isUpdating) {
+      // TODO (Zustand): Substitua a chamada abaixo pela action de atualizar da sua store
       updateTask(taskId, text, completed, formattedDate, setTasks, resetForm);
     } else {
+      // TODO (Zustand): Substitua a chamada abaixo pela action de adicionar da sua store
       addTask(text, completed, formattedDate, setTasks, resetForm);
     }
   };
@@ -121,6 +126,7 @@ export default function App() {
               styles.deleteButton,
               pressed && styles.deleteButtonPressed
             ]}
+            // TODO (Zustand): Chame a action de deletar todas as tarefas da sua store
             onPress={() => setTasks([])} 
           >
             <Text style={styles.actionButtonText}>Excluir todas</Text>
@@ -131,6 +137,7 @@ export default function App() {
           <Button title="Sobre o App" onPress={() => setAboutModalVisible(true)} />
         </View>
 
+        {/* TODO (Zustand): Remova as props tasks, onUpdate e onDelete após refatorar o TaskList */}
         <TaskList 
           tasks={tasks.filter(t => {
             if (filter === 'completed') return t.completed;

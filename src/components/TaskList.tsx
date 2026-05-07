@@ -3,12 +3,14 @@ import { SectionList, StyleSheet, View, Text } from 'react-native';
 import TaskItem from './TaskItem';
 import { TaskItem as TaskType } from '../utils/handle-api';
 
+// TODO (Zustand): Remova as props tasks, onUpdate e onDelete daqui, elas não serão mais necessárias
 interface TaskListProps {
   tasks: TaskType[];
   onUpdate: (task: TaskType) => void;
   onDelete: (id: string) => void;
 }
 
+// TODO (Zustand): Importe o useTaskStore e pegue as tasks diretamente da store
 const TaskList: React.FC<TaskListProps> = ({ tasks, onUpdate, onDelete }) => {
   const sections = useMemo(() => {
     const completedTasks = tasks.filter((task) => task.completed);
@@ -30,6 +32,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onUpdate, onDelete }) => {
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
         renderItem={({ item }) => (
+          {/* TODO (Zustand): Remova as props passadas para o TaskItem após refatorá-lo */}
           <TaskItem
             task={item}
             updateMode={() => onUpdate(item)}
