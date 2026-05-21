@@ -1,36 +1,44 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather, AntDesign } from '@expo/vector-icons';
+import { useTaskStore } from '../store/useTaskStore';
 import { TaskItem as TaskType } from '../utils/handle-api';
+import { Link } from 'expo-router';
 
-// TODO (Zustand): Mantenha apenas a prop 'task'. Remova 'updateMode' e 'deleteTask'
 interface TaskItemProps {
   task: TaskType;
-  updateMode: () => void;
-  deleteTask: () => void;
 }
 
-// TODO (Zustand): Importe o useTaskStore e pegue as actions de atualizar e deletar diretamente da store
-const TaskItem: React.FC<TaskItemProps> = ({ task, updateMode, deleteTask }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
+  const deleteTaskStore = useTaskStore((state) => state.deleteTaskStore);
+  const setEditingTask = useTaskStore((state) => state.setEditingTask);
+  const setModalVisible = useTaskStore((state) => state.setModalVisible);
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date(new Date().setHours(0, 0, 0, 0));
+
+  const handleEdit = () => {
+    setEditingTask(task);
+    setModalVisible(true);
+  };
 
   return (
     <View style={styles.task}>
-      <View style={styles.contentContainer}>
-        <Text style={[styles.text, !!task.completed && styles.textCompleted]}>
-          {task.text}
-        </Text>
-        {task.dueDate && (
-          <Text style={[styles.dateText, isOverdue ? styles.dateOverdue : styles.dateOnTime]}>
-            Até: {new Date(task.dueDate).toLocaleDateString()}
+      <Link href={`/task/${task._id}`} asChild>
+        <TouchableOpacity style={styles.contentContainer}>
+          <Text style={[styles.text, !!task.completed && styles.textCompleted]}>
+            {task.text}
           </Text>
-        )}
-      </View>
+          {task.dueDate && (
+            <Text style={[styles.dateText, isOverdue ? styles.dateOverdue : styles.dateOnTime]}>
+              Até: {new Date(task.dueDate).toLocaleDateString()}
+            </Text>
+          )}
+        </TouchableOpacity>
+      </Link>
       <View style={styles.icons}>
-        <TouchableOpacity onPress={updateMode} accessibilityRole="button">
+        <TouchableOpacity onPress={handleEdit} accessibilityRole="button">
           <Feather name="edit" size={20} color="#fff" style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={deleteTask} accessibilityRole="button">
+        <TouchableOpacity onPress={() => deleteTaskStore(task._id)} accessibilityRole="button">
           <AntDesign name="delete" size={20} color="#fff" style={styles.icon} />
         </TouchableOpacity>
       </View>
